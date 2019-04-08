@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <% if (typeof(title) != "undefined") {%>
+     <title><%= title %></title>
+    <%} %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='http://localhost:3000/static/css/foundation.css' />
+    <link rel='stylesheet' href='http://localhost:3000/static/css/custom.css' />
+</head>
+<body>
+
+<!-- Start Top Bar -->
+<%- include('block/navbar') -%>
+<!-- End Top Bar -->
+
+
+<!-- Start content Bar -->
+<% if (typeof(content) != "undefined") {%>
+    <%- include(content) -%>
+<%} %>
+<!-- Start content Bar -->
+
+
+
+
+
+<!-- Start Fooder Bar -->
+<%- include('block/footer') -%>
+<!-- End Fooder Bar -->
+
+
+<script src="http://localhost:3000/static/js/vendor/jquery.js"></script>
+<script src="http://localhost:3000/static/js/vendor/what-input.js"></script>
+<script src="http://localhost:3000/static/js/vendor/foundation.min.js"></script>
+<script src="http://localhost:3000/static/js/custom.js"></script>
+
+<script>
+    $(document).foundation();
+</script>
+</body>
+</html>
