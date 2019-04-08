@@ -1,0 +1,3 @@
+# fatplant
+
+Mongodb + express + EJS
