@@ -9,7 +9,7 @@ router.get('/num', async function (req, res, next) {
 
         var num = await db.collection('LMPD').countDocuments(function(err,countData){
             console.log("hhaha");
-//you will get the count of number of documents in mongodb collection in the variable
+
             console.log(countData);
 
 
@@ -35,7 +35,7 @@ router.get('/', async function (req, res, next) {
 
         });
 
-        await db.collection('LMPD').find({}).toArray(function (err, result) {
+        await db.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
         if (err) throw err;
         dbdata = result;
 

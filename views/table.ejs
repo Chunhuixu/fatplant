@@ -50,57 +50,52 @@
 </div>
 
 <script>
-    console.log('<%= Object.keys(data[0])%>')
-
+    //test
+    console.log('<%= Object.keys(data[0]) %>')
 
 </script>
 
-<div class="row table-scroll">
-
-    <table class="hover table-expand" >
-        <thead>
-        <tr class="table-expand-row" >
-            <% th = Object.keys(data[0]) %>
-            <% for(let i = 1; i < th.length; i++) { %>
-                <th> <%= th[i] %> </th>
-            <% } %>
-        </tr>
-
-        </thead>
-        <tbody>
-
-        <% for(let i = 0; i < data.length; i++) { %>
-            <tr class="table-expand-row" data-open-details>
-                <% for(var attribute in data[i]) { %>
-                    <% if (attribute == "_id") {
-                        continue
-                    } else if (attribute == "sequence") { %>
-                            <td><span class="expand-icon"></span></td>
-                    <% } else { %>
-                        <td><%= data[i][attribute] %></td>
-                    <% } %>
+<div class="row ">
+    <div class="columns small-10 small-centered table-scroll ">
+        <table class="hover table-expand">
+            <thead>
+            <tr class="table-expand-row">
+                <% th = Object.keys(data[0]) %>
+                <% for(let i = 1; i < th.length; i++) { %>
+                    <th> <%= th[i] %> </th>
                 <% } %>
             </tr>
-            <tr class="table-expand-row-content">
-                <td colspan="15" class="table-expand-row-nested">
 
-                    <p><a href="show/?id=<%= data[i]["_id"] %>"><%= data[i]["sequence"] %></a></p>
-                </td>
+            </thead>
+            <tbody>
 
-            </tr>
+            <% for(let i = 0; i < data.length; i++) { %>
+                <tr class="table-expand-row" data-open-details>
+                    <% for(var attribute in data[i]) { %>
+                        <% if (attribute == "_id") {
+                            continue
+                        } else if (attribute == "sequence") { %>
+                            <td><span class="expand-icon"></span></td>
+                        <% } else { %>
+                            <td><%= data[i][attribute] %></td>
+                        <% } %>
+                    <% } %>
+                </tr>
+                <tr class="table-expand-row-content">
+                    <td colspan="15" class="table-expand-row-nested">
 
+                        <p><a href="show/?id=<%= data[i]["_id"] %>"><%= data[i]["sequence"] %></a></p>
+                    </td>
 
-        <% } %>
+                </tr>
 
+            <% } %>
 
+            </tbody>
+        </table>
 
-        </tbody>
-    </table>
-
+    </div>
 </div>
-
-
-
 
 
 <!-- Start Fooder Bar -->
@@ -121,7 +116,7 @@
     $(document).ready(function () {
 
 
-       // $("table tr td:nth-child(1)").hide();
+        // $("table tr td:nth-child(1)").hide();
 
     });
 
@@ -130,7 +125,6 @@
         $(this).next().toggleClass('is-active');
         $(this).toggleClass('is-active');
     });
-
 
 
 </script>

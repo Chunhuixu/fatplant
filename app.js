@@ -12,9 +12,9 @@ var app = express();
 var multer = require('multer');
 var upload = multer({dest: 'upload/'});
 var fs = require('fs');
-var url = "mongodb://localhost:27017/";
-var MongoClient = require('mongodb').MongoClient;
-
+var db = require('./db/db.js');
+// var url = "mongodb://localhost:27017/";
+// var MongoClient = require('mongodb').MongoClient;
 
 
 // view engine setup
@@ -47,19 +47,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 
-MongoClient.connect(url,
-    {
-        useNewUrlParser: true,
-        //poolsize could be change
-        poolSize: 10
-
-    }, function (err, db) {
-        if (err) throw err;
-        console.log("Connected correctly to server");
-        var dbo = db.db("data");
-        app.locals.db = dbo;
-
-    });
+// MongoClient.connect(url,
+//     {
+//         useNewUrlParser: true,
+//         //poolsize could be change
+//         poolSize: 10
+//
+//     }, function (err, db) {
+//         if (err) throw err;
+//         console.log("Connected correctly to server");
+//         var dbo = db.db("data");
+//         app.locals.db = dbo;
+//
+//     });
 
 //Route
 //rountering --
@@ -76,8 +76,6 @@ app.use('/table', tableRouter);
 app.use('/show', showRouter);
 app.use('/page', pageRouter);
 app.use('/file', fileRouter);
-
-
 
 
 //API- ignore this if we dont have api route
@@ -146,10 +144,21 @@ app.use(function (err, req, res, next) {
 /**
  below copy from www ignore------
  */
+
 var port = normalizePort(process.env.PORT || '3000');
+
 app.set('port', port);
 var server = http.createServer(app);
-server.listen(port);
+// connnect to db before app running
+db.connect()
+    .then(() => console.log('database connected'))
+    .then(server.listen(port))
+    .catch((e) => {
+    console.error(' app crashed ');
+    console.error(e);
+    // Always hard exit on a database connection error
+    process.exit(1);
+    });
 server.on('error', onError);
 server.on('listening', onListening);
 
