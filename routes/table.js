@@ -1,71 +1,91 @@
 var express = require('express');
+var db = require('../db/db.js');
 var router = express.Router();
 var dbdata = "";
+
 var pageid = 0;
+var pagesize = 20;
+var pagenumber = 0
 
-router.get('/num', async function (req, res, next) {
+var _id;
+var _num;
 
-    var db = req.app.locals.db;
 
-        var num = await db.collection('LMPD').countDocuments(function(err,countData){
-            console.log("hhaha");
-
-            console.log(countData);
-
+router.get('/', function (req, res, next) {
+    var dbo = db.getconnect();
+    dbo.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
+        if (err) throw err;
+        dbdata = result;
+        res.render('dataPages/table', {
+            title: 'Table',
 
         });
+
+    });
+
 });
 
 
-router.get('/', async function (req, res, next) {
 
-    var db = req.app.locals.db;
+
+router.get('/data', function (req, res, next) {
+    console.log("runnsfadsning");
+    _num =req.query.num;
+
+    console.log(_num);
+    var dbo = db.getconnect();
     if (typeof (req.query.num) != "undefined") {
-        res.render('layout', {
-            title: 'File',
-            content: 'fileupload'
+        var number;
+        pagenumber = parseInt(req.query.num) ;
+        number = pagenumber * pagesize;
+
+        dbo.collection('LMPD').find({}).limit(20).skip(number).toArray(function (err, result) {
+            if (err) throw err;
+
+            res.render('dataPages/renderTable', {
+                data: result
+            });
+
         });
 
     }
-    else{
-        var num = await db.collection('LMPD').countDocuments(function(err,countData){
-            console.log("hhaha");
-            console.log(countData);
+    else {
+        dbo.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
+            if (err) throw err;
 
+            res.render('dataPages/renderTable', {
+                data: result
+            });
 
         });
+    }
 
-        await db.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
-        if (err) throw err;
-        dbdata = result;
-
-        res.render('table', {
-            title: 'Table',
-            data: dbdata
-        });
-
-    });}
 
 });
+
+router.get('/show', function (req, res, next) {
+    _id = req.query.id;
+    var dbo = db.getconnect();
+    dbo.collection('LMPD').find({"_id": _id}).toArray(function (err, result) {
+        if (err) throw err;
+        dbdata = result;
+        res.render('dataPages/show', {
+            title: 'Introduction',
+            id:req.query.id,
+            data:dbdata
+        });
+
+
+    });
+});
+
+
+
+// router.get('/:num', function (req, res, next) {
+// });
+
+
 
 module.exports = router;
 
 
-// old version
-//var MongoClient = require('mongodb').MongoClient;
-// var url = "mongodb://localhost:27017/";
-// router.get('/', function (req, res, next) {
-//     MongoClient.connect(url, function (err, db) {
-//         if (err) throw err;
-//         var dbo = db.db("data");
-//         dbo.collection("LMPD").find({}).limit(15).toArray(function (err, result) { // return all the data
-//             if (err) throw err;
-//             dbdata = result;
-//             res.render('table', {
-//                 title: 'Table',
-//                 data: dbdata
-//             });
-//
-//         });
-//     });
-// });

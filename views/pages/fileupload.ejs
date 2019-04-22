@@ -1,0 +1,33 @@
+<!-- Start Top Bar -->
+<%- include('../block/header') -%>
+<!-- End Top Bar -->
+
+<div class="row column">
+    <div class="columns small-10 small-centered textrow">
+
+        <p> Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam
+            eu diam mattis viverra. Nulla fringilla, orci ac euismod semper, magna.</p>
+        </p>
+        <% if (typeof(judge) != "undefined") {%>
+            <p><%= judge %></p>
+        <%} %>
+
+        <div class="row column">
+            <div class="columns small-12 small-centered textrow">
+
+            <form action="/file/upload" method="post" enctype="multipart/form-data">
+
+            <label for="exampleFileUpload">Upload File</label>
+
+            <input id="exampleFileUpload"  type="file" name="logo">
+            <input type="file" name="logo">
+            <input type="submit" class="button" value="Submit">
+
+        </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

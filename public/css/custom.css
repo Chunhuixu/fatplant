@@ -147,3 +147,18 @@ tbody td {
     padding: .2rem .325rem .325rem;
 }
 
+.hr-line {
+    margin-left: auto;
+    margin-right: auto;
+    height: 1.5px;
+    margin-top: -5px;
+    background-color: #488b8f;
+}
+#cy {
+    width: 800px;
+    height: 800px;
+    display: block;
+    border:1px solid #488b8f;
+    margin:0px auto;
+
+}

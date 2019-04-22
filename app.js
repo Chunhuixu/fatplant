@@ -1,4 +1,4 @@
-//envi->
+// middleware
 var debug = require('debug')('fatplant:server');
 var http = require('http');
 var createError = require('http-errors');
@@ -8,13 +8,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
-var app = express();
-var multer = require('multer');
-var upload = multer({dest: 'upload/'});
-var fs = require('fs');
+
 var db = require('./db/db.js');
-// var url = "mongodb://localhost:27017/";
-// var MongoClient = require('mongodb').MongoClient;
+var app = express();
 
 
 // view engine setup
@@ -23,22 +19,11 @@ app.set('view engine', 'ejs');
 
 
 // load the middleware module
-// ** the order is matter! **
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
-
-//using sass and static files
-app.use(sassMiddleware({
-    src: __dirname + "/public",
-    dest: path.join(__dirname, 'public'),
-    debug: true,
-    indentedSyntax: true, // true = .sass and false = .scss
-    sourceMap: true,
-    outputStyle: 'compressed'
-}));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 
@@ -47,82 +32,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 
-// MongoClient.connect(url,
-//     {
-//         useNewUrlParser: true,
-//         //poolsize could be change
-//         poolSize: 10
-//
-//     }, function (err, db) {
-//         if (err) throw err;
-//         console.log("Connected correctly to server");
-//         var dbo = db.db("data");
-//         app.locals.db = dbo;
-//
-//     });
 
-//Route
-//rountering --
+//Route register --
 var indexRouter = require('./routes/index'); //home
 var tableRouter = require('./routes/table'); //table
-var showRouter = require('./routes/show'); //show
 var pageRouter = require('./routes/page'); //page-about
-var fileRouter = require('./routes/file'); //page-about
-
+var fileRouter = require('./routes/file'); //file upload
+var cytRouter = require('./routes/cyView') // for Cytoscape
 
 //rountering ===>
 app.use('/', indexRouter);
 app.use('/table', tableRouter);
-app.use('/show', showRouter);
 app.use('/page', pageRouter);
 app.use('/file', fileRouter);
+app.use('/cy', cytRouter);
 
 
-//API- ignore this if we dont have api route
-var dataRouter = require('./routes/api/data');
-var testAPI = require('./routes/test');
-var testAPI1 = require('./routes/api/data1');
+// //API- ignore and delete below if we dont have api route
+// var dataRouter = require('./routes/api/data');
+// var testAPI = require('./routes/test');
+// var testAPI1 = require('./routes/api/data1');
+//
+// //API==>
+// app.use('/data', dataRouter);
+// app.use('/test', testAPI);
+// app.use('/data1', testAPI1);
+//
 
-//API==>
-app.use('/data', dataRouter);
-app.use('/test', testAPI);
-app.use('/data1', testAPI1);
-
-
-//file handler
-var createFolder = function (folder) {
-    try {
-        fs.accessSync(folder);
-    } catch (e) {
-        fs.mkdirSync(folder);
-    }
-};
-
-var uploadFolder = './upload/';
-
-createFolder(uploadFolder);
-
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadFolder);
-    },
-    filename: function (req, file, cb) {
-        var file_type = '.' + file.type;
-        console.log(file.type);
-        cb(null, file.fieldname + '-' + Date.now() + file_type);
-    }
-});
-
-var upload = multer({storage: storage})
-
-
-app.post('/upload', upload.array('logo', 2), function (req, res, next) {
-    res.render('layout', {
-        title: 'File',
-        content: 'fileupload',
-        judge: 'success'
-    });
-});
 
 
 // catch 404 and forward to error handler
@@ -141,14 +77,14 @@ app.use(function (err, req, res, next) {
 });
 
 
+
 /**
  below copy from www ignore------
  */
-
 var port = normalizePort(process.env.PORT || '3000');
-
 app.set('port', port);
 var server = http.createServer(app);
+
 // connnect to db before app running
 db.connect()
     .then(() => console.log('database connected'))
@@ -164,19 +100,17 @@ server.on('listening', onListening);
 
 function normalizePort(val) {
     var port = parseInt(val, 10);
-
     if (isNaN(port)) {
         // named pipe
         return val;
     }
-
     if (port >= 0) {
         // port number
         return port;
     }
-
     return false;
 }
+
 
 function onError(error) {
     if (error.syscall !== 'listen') {
@@ -201,6 +135,7 @@ function onError(error) {
             throw error;
     }
 }
+
 
 function onListening() {
     var addr = server.address();

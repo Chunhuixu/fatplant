@@ -1,5 +1,7 @@
+// for all the basic mongodb test
+// ingore if not applied
 
-//file for all the basic mongodb test
+
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var objectId = require('mongodb').ObjectId;
@@ -79,8 +81,6 @@ MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
             db.close();
         }
     });
-
-
 
 
 

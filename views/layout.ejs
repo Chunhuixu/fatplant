@@ -7,8 +7,15 @@
      <title><%= title %></title>
     <%} %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel='stylesheet' href='http://localhost:3000/static/css/foundation.css' />
-    <link rel='stylesheet' href='http://localhost:3000/static/css/custom.css' />
+    <link rel='stylesheet' href='/static/css/foundation.css' />
+    <link rel='stylesheet' href='/static/css/custom.css' />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+
+<% if (typeof(hasTable) != "undefined") {%>
+        <link rel='stylesheet' href='/static/css/page.css'/>
+    <%} %>
 </head>
 <body>
 
@@ -32,10 +39,10 @@
 <!-- End Fooder Bar -->
 
 
-<script src="http://localhost:3000/static/js/vendor/jquery.js"></script>
-<script src="http://localhost:3000/static/js/vendor/what-input.js"></script>
-<script src="http://localhost:3000/static/js/vendor/foundation.min.js"></script>
-<script src="http://localhost:3000/static/js/custom.js"></script>
+<script src="/static/js/vendor/jquery.js"></script>
+<script src="/static/js/vendor/what-input.js"></script>
+<script src="/static/js/vendor/foundation.min.js"></script>
+<script src="/static/js/custom.js"></script>
 
 <script>
     $(document).foundation();

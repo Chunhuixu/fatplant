@@ -1,6 +1,5 @@
 //mongoose library test
 
-
 var mongoose = require('mongoose');
 var url = 'mongodb://localhost:27017/data';
 var Schema = mongoose.Schema;
@@ -35,7 +34,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('mongoose opened!');
 
-
+n
 
 });
 // lmpdModel.find({}, function(err, result){

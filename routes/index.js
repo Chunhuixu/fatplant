@@ -5,10 +5,9 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('layout', {
     title: 'FatPlant',
-    content: 'index'
+    content: 'pages/index'
   });
 });
-
 
 
 

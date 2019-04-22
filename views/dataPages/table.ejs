@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title><%= title %></title>
+
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+    <link rel='stylesheet' href='/static/css/foundation.css'/>
+    <link rel='stylesheet' href='/static/css/custom.css'/>
+    <link rel='stylesheet' href='/static/css/page.css'/>
+
+
+</head>
+<body>
+
+<!-- Start Top Bar -->
+<%- include('../block/navbar') -%>
+<!-- End Top Bar -->
+
+<!-- Start Top Bar -->
+<%- include('../block/header') -%>
+<!-- End Top Bar -->
+
+<div class="row columns">
+    <div class="columns small-10 small-centered textrow ">
+
+        <p>Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam
+            eu diam mattis viverra. Nulla fringilla, orci ac euismod semper, magna.</p>
+    </div>
+</div>
+<div class="row columns" >
+
+    <div class=" text-center" id = "loading">
+        <p><i class="fas fa-spinner fa-spin fa-1.5x"></i>&nbsp;Loading im in current page </p>
+
+    </div>
+
+</div>
+<div class="row columns" >
+<div class="columns small-10 small-centered table-scroll" style="margin-bottom: -15px">
+    <ul class="pagination text-center" role="navigation" aria-label="Pagination">
+        <li class="disabled">Previous <span class="show-for-sr">page</span></li>
+        <li class="current" aria-label="Page 1"> 1</li>
+        <li><a href="table/data/?num=1" aria-label="Page 2">2</a></li>
+        <li><a href="table/data/?num=2" aria-label="Page 3">3</a></li>
+        <li><a href="table/data/?num=3" aria-label="Page 4">4</a></li>
+
+        <li class="ellipsis" aria-hidden="true"></li>
+
+        <li><a href="table/data/?num=11" aria-label="Page 12">12</a></li>
+        <li><a href="table/data/?num=12" aria-label="Page 13">13</a></li>
+
+        <li><a href="table/data/" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+
+    </ul>
+</div>
+</div>
+<!-- start table Bar -->
+<div id="tableContent">
+
+</div>
+    <!-- End table Bar -->
+
+
+
+<!-- Start Fooder Bar -->
+<%- include('../block/footer') -%>
+<!-- End Fooder Bar -->
+
+
+<script src="/static/js/vendor/jquery.js"></script>
+<script src="/static/js/vendor/what-input.js"></script>
+<script src="/static/js/vendor/foundation.min.js"></script>
+<script src="/static/js/custom.js"></script>
+
+
+<script>
+    $(document).foundation();
+    $(document).ready(function () {
+        $.get({
+            url: '/table/data',
+            success:function(data) {
+              $("#tableContent").html(data);
+              $("#loading").hide();
+                $('[data-open-details]').click(function (e) {
+                    e.preventDefault();
+                    $(this).next().toggleClass('is-active');
+                    $(this).toggleClass('is-active');
+                });
+
+
+            }
+        }
+
+        )
+
+        // $("table tr td:nth-child(1)").hide();
+        $(pagination).click()
+
+    });
+
+
+
+</script>
+
+</body>
+</html>
