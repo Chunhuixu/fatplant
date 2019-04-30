@@ -3,9 +3,12 @@ var db = require('../db/db.js');
 var router = express.Router();
 var dbdata = "";
 
-var pageid = 0;
+var totalnumber = 0;
+
 var pagesize = 20;
+var currentNumber = 0;
 var pagenumber = 0
+var number=0;
 
 var _id;
 var _num;
@@ -13,48 +16,82 @@ var _num;
 
 router.get('/', function (req, res, next) {
     var dbo = db.getconnect();
-    dbo.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
+
+    dbo.collection('LMPD').countDocuments({}, function(err, numOfDocs){
         if (err) throw err;
-        dbdata = result;
-        res.render('dataPages/table', {
-            title: 'Table',
+        totalnumber = parseInt(numOfDocs);
+
+        pagenumber = Math.floor(totalnumber/pagesize);
+        dbo.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
+            if (err) throw err;
+            res.render('dataPages/table', {
+                title: 'Table',
+                tabledata: result,
+                pnumber:pagenumber,
+                currentPnum:0
+            });
 
         });
 
     });
 
+
 });
 
 
-
-
 router.get('/data', function (req, res, next) {
-    console.log("runnsfadsning");
-    _num =req.query.num;
 
-    console.log(_num);
     var dbo = db.getconnect();
+    var reg = /^[0-9]+.?[0-9]*/;
     if (typeof (req.query.num) != "undefined") {
-        var number;
-        pagenumber = parseInt(req.query.num) ;
-        number = pagenumber * pagesize;
+        _num = req.query.num;
+        if (!reg.test(_num)) {
+            res.render('dataPages/table', {
+                title: 'Table',
+                alert: "The query has to be number"
 
-        dbo.collection('LMPD').find({}).limit(20).skip(number).toArray(function (err, result) {
-            if (err) throw err;
-
-            res.render('dataPages/renderTable', {
-                data: result
             });
+        } else {
+            currentNumber = parseInt(_num);
+            number = currentNumber * pagesize;
 
-        });
+            //this could be change to id(primary) > number(current) for speed up the searching time...
+            //I will just use skip() function for now.
 
-    }
-    else {
+            dbo.collection('LMPD').find({}).limit(20).skip(number).toArray(function (err, result) {
+                pagenumber = req.query.pnumber;
+
+                if (err) throw err;
+                //if the result is null
+                if(Array.isArray(result) && result.length === 0){
+
+                    res.render('dataPages/table', {
+                        title: 'Table',
+                        alert: "Sry, There is no result"
+                    });
+                }else{
+                    // successful result
+                res.render('dataPages/table', {
+                    title: 'Table',
+                    tabledata: result,
+                    pnumber:pagenumber,
+                    currentPnum:currentNumber
+                });
+                }
+
+            });
+        }
+    } else {
+
+        //if query not exist. back to main page
         dbo.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
+            pagenumber = req.query.pnumber;
             if (err) throw err;
-
-            res.render('dataPages/renderTable', {
-                data: result
+            res.render('dataPages/table', {
+                title: 'Table',
+                tabledata: result,
+                pnumber:pagenumber,
+                currentPnum:1
             });
 
         });
@@ -69,10 +106,11 @@ router.get('/show', function (req, res, next) {
     dbo.collection('LMPD').find({"_id": _id}).toArray(function (err, result) {
         if (err) throw err;
         dbdata = result;
+
         res.render('dataPages/show', {
             title: 'Introduction',
-            id:req.query.id,
-            data:dbdata
+            id: req.query.id,
+            data: dbdata
         });
 
 
@@ -80,10 +118,16 @@ router.get('/show', function (req, res, next) {
 });
 
 
+router.get('/search', function (req, res, next) {
 
+        res.render('dataPages/tablesearch', {
+            title: 'Search',
+
+        });
+
+});
 // router.get('/:num', function (req, res, next) {
 // });
-
 
 
 module.exports = router;

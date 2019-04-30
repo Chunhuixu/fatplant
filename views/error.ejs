@@ -3,9 +3,11 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel='stylesheet' href='http://localhost:3000/static/css/foundation.css' />
-    <link rel='stylesheet' href='http://localhost:3000/static/css/custom.css' />
+    <link rel='stylesheet' href='/static/css/foundation.css' />
+    <link rel='stylesheet' href='/static/css/custom.css' />
+
 </head>
 <body>
 <!-- Start Top Bar -->
@@ -15,8 +17,9 @@
 
 <div class="row column slice">
     <div class="columns small-11 small-centered textrow">
-        <h1>Errors: <%= message %></h1>
-        <h2><%= error.status %></h2>
+        <h1>Errors: </h1>
+        <p><%= message %></p>
+        <h3> <%= error.status %></h3>
         <pre><%= error.stack %></pre>
     </div>
 </div>
@@ -27,9 +30,11 @@
 <!-- End Fooder Bar -->
 
 
-<script src="http://localhost:3000/static/js/vendor/jquery.js"></script>
-<script src="http://localhost:3000/static/js/vendor/what-input.js"></script>
-<script src="http://localhost:3000/static/js/vendor/foundation.min.js"></script>
+<script src="/static/js/vendor/jquery.js"></script>
+<script src="/static/js/vendor/what-input.js"></script>
+<script src="/static/js/vendor/foundation.min.js"></script>
+<script src="/static/js/custom.js"></script>
+
 <script>
     $(document).foundation();
 </script>

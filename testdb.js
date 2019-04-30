@@ -1,4 +1,5 @@
 //db test. ignore and delete if not applied
+// dont run this program only if u know what u are doing.
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";

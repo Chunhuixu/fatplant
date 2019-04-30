@@ -14,7 +14,6 @@
     <link rel='stylesheet' href='/static/css/custom.css'/>
 
 
-
 </head>
 <body>
 
@@ -34,19 +33,18 @@
 
     </div>
 </div>
-<div class="row columns" >
+<div class="row columns">
 
-    <div class=" text-center" id = "loading">
-        <p><i class="fas fa-spinner fa-spin fa-1.5x"></i>&nbsp;Loading  </p>
-
+    <div class=" text-center" id="loading" style="margin-top: 35px">
+        <h5><i class="fas fa-spinner fa-spin fa-1.5x"></i>&nbsp;Loading to the page .... </h5>
     </div>
 
 </div>
 
 
-<div class="row column" >
-    <div class=" columns small-10 small-centered" id="cy">
+<div class="row column">
 
+    <div class=" columns small-10 small-centered" id="cy">
 
 
     </div>
@@ -63,28 +61,44 @@
 <script src="/static/js/vendor/jquery.js"></script>
 <script src="/static/js/vendor/what-input.js"></script>
 <script src="/static/js/vendor/foundation.min.js"></script>
-<script src="/static/js/custom.js"></script>
 
+<!--test. you could change this latter-->
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/numeric/numeric-1.2.6.js"></script>
+<script src="https://unpkg.com/layout-base/layout-base.js"></script>
+<script src="https://unpkg.com/cose-base/cose-base.js"></script>
+
+<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+<script src="cytoscape-cola.js"></script>
+<!--change-->
+<script src="/static/js/cytoscape-cola.js"></script>
+<script src="/static/js/fcose.js"></script>
+<script src="/static/js/custom.js"></script>
 
 
 <script>
     $(document).foundation();
     $(document).ready(function () {
-        var mydata = 0;
+        // build pagination
+
+        $("#cy").hide();
 
         $.get({
             url: '/cy/data',
-            success:function(data) {
+            success: function (data) {
                 $("#loading").hide();
+                $("#cy").show();
+
 
                 var elementsdata = data;
+
 
 
                 var cy = cytoscape({
 
                     container: document.getElementById('cy'), // container to render in
 
-                    elements:elementsdata ,
+                    elements: elementsdata,
 
                     style: [ // the stylesheet for the graph
                         {
@@ -108,13 +122,188 @@
                             }
                         }
                     ],
+
+                    autounselectify: true,
+
+                    boxSelectionEnabled: false,
+
                     layout: {
-                        name: 'force-directed'
+                        name: 'cola'
                     },
 
 
 
                 });
+                // let options = {
+                //     name: 'cose',
+                //
+                //     // Called on `layoutready`
+                //     ready: function(){},
+                //
+                //     // Called on `layoutstop`
+                //     stop: function(){},
+                //     animate: true,
+                //
+                //     // Easing of the animation for animate:'end'
+                //       animationEasing: undefined,
+                //
+                //     // The duration of the animation for animate:'end'
+                //     animationDuration: undefined,
+                //
+                //     // A function that determines whether the node should be animated
+                //     // All nodes animated by default on animate enabled
+                //     // Non-animated nodes are positioned immediately when the layout starts
+                //     animateFilter: function ( node, i ){ return true; },
+                //
+                //
+                //     // The layout animates only after this many milliseconds for animate:true
+                //     // (prevents flashing on fast runs)
+                //     animationThreshold: 250,
+                //
+                //     // Number of iterations between consecutive screen positions update
+                //     refresh: 20,
+                //
+                //     // Whether to fit the network view after when done
+                //     fit: true,
+                //
+                //     // Padding on fit
+                //     padding: 30,
+                //
+                //     // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                //     boundingBox: undefined,
+                //
+                //     // Excludes the label when calculating node bounding boxes for the layout algorithm
+                //     nodeDimensionsIncludeLabels: false,
+                //
+                //     // Randomize the initial positions of the nodes (true) or use existing positions (false)
+                //     randomize: false,
+                //
+                //     // Extra spacing between components in non-compound graphs
+                //     componentSpacing: 40,
+                //
+                //     // Node repulsion (non overlapping) multiplier
+                //     nodeRepulsion: function( node ){ return 2048; },
+                //
+                //     // Node repulsion (overlapping) multiplier
+                //     nodeOverlap: 4,
+                //
+                //     // Ideal edge (non nested) length
+                //     idealEdgeLength: function( edge ){ return 32; },
+                //
+                //     // Divisor to compute edge forces
+                //     edgeElasticity: function( edge ){ return 32; },
+                //
+                //
+                //
+                // };
+                var defaults = {
+                    animate: true, // whether to show the layout as it's running
+                    refresh: 1, // number of ticks per frame; higher is faster but more jerky
+                    maxSimulationTime: 4000, // max length in ms to run the layout
+                    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+                    fit: true, // on every layout reposition of nodes, fit the viewport
+                    padding: 30, // padding around the simulation
+                    boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                    nodeDimensionsIncludeLabels: false, // whether labels should be included in determining the space used by a node
+
+                    // layout event callbacks
+                    ready: function () {
+                    }, // on layoutready
+                    stop: function () {
+                    }, // on layoutstop
+
+                    // positioning options
+                    randomize: false, // use random node positions at beginning of layout
+                    avoidOverlap: true, // if true, prevents overlap of node bounding boxes
+                    handleDisconnected: true, // if true, avoids disconnected components from overlapping
+                    convergenceThreshold: 0.01, // when the alpha value (system energy) falls below this value, the layout stops
+                    nodeSpacing: function (node) {
+                        return 10;
+                    }, // extra spacing around nodes
+                    flow: undefined, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
+                    alignment: undefined, // relative alignment constraints on nodes, e.g. function( node ){ return { x: 0, y: 1 } }
+                    gapInequalities: undefined, // list of inequality constraints for the gap between the nodes, e.g. [{"axis":"y", "left":node1, "right":node2, "gap":25}]
+
+                    // different methods of specifying edge length
+                    // each can be a constant numerical value or a function like `function( edge ){ return 2; }`
+                    edgeLength: undefined, // sets edge length directly in simulation
+                    edgeSymDiffLength: undefined, // symmetric diff edge length in simulation
+                    edgeJaccardLength: undefined, // jaccard edge length in simulation
+
+                    // iterations of cola algorithm; uses default values on undefined
+                    unconstrIter: undefined, // unconstrained initial layout iterations
+                    userConstIter: undefined, // initial layout iterations with user-specified constraints
+                    allConstIter: undefined, // initial layout iterations with all constraints including non-overlap
+                };
+                let options = {
+                    name: 'cose',
+
+
+                    // Called on `layoutstop`
+                    stop: function(){},
+
+
+
+                    // The layout animates only after this many milliseconds for animate:true
+                    // (prevents flashing on fast runs)
+                    animationThreshold: 250,
+
+                    // Number of iterations between consecutive screen positions update
+                    refresh: 20,
+
+                    // Whether to fit the network view after when done
+                    fit: true,
+
+                    // Padding on fit
+                    padding: 30,
+
+                    // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                    boundingBox: undefined,
+
+                    // Excludes the label when calculating node bounding boxes for the layout algorithm
+                    nodeDimensionsIncludeLabels: false,
+
+                    // Randomize the initial positions of the nodes (true) or use existing positions (false)
+                    randomize: false,
+
+                    // Extra spacing between components in non-compound graphs
+                    componentSpacing: 40,
+
+                    // Node repulsion (non overlapping) multiplier
+                    nodeRepulsion: function( node ){ return 2048; },
+
+                    // Node repulsion (overlapping) multiplier
+                    nodeOverlap: 4,
+
+                    // Ideal edge (non nested) length
+                    idealEdgeLength: function( edge ){ return 999; },
+
+                    // Divisor to compute edge forces
+                    edgeElasticity: function( edge ){ return 32; },
+
+                    // Nesting factor (multiplier) to compute ideal edge length for nested edges
+                    nestingFactor: 1.2,
+
+                    // Gravity force (constant)
+                    gravity: 1,
+
+                    // Maximum number of iterations to perform
+                    numIter: 1000,
+
+                    // Initial temperature (maximum node displacement)
+                    initialTemp: 1000,
+
+                    // Cooling factor (how the temperature is reduced between consecutive iterations
+                    coolingFactor: 0.99,
+
+                    // Lower temperature threshold (below this point the layout will end)
+                    minTemp: 1.0,
+
+                    // Pass a reference to weaver to use threads for calculations
+                    weaver: false
+                };
+
+                cy.layout( options );
 
 
 
@@ -124,13 +313,7 @@
         //console.log(mydata);
 
 
-
-
-
-
-
     });
-
 
 
 </script>

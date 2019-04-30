@@ -1,13 +1,16 @@
 // for all the basic mongodb test
 // ingore if not applied
 
+// dont run this program only if u know what u are doing.
 
+
+require('dotenv').config();
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+
 var objectId = require('mongodb').ObjectId;
 
 
-MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
+MongoClient.connect(process.env.DATABASE, { useNewUrlParser: true },function(err, db) {
     if (err) throw err;
     var dbo = db.db("data");
 
@@ -71,8 +74,6 @@ MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
             //     console.log("success delete");
             //
             // });
-
-
 
         }
         else{

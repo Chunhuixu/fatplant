@@ -1,7 +1,7 @@
 // mongodb-native library set
-
+require('dotenv').config();
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+
 var option = {
     useNewUrlParser: true,
     //number of retries off connection.
@@ -20,9 +20,9 @@ var connection = null;
 
 // connect db
 module.exports.connect = () => new Promise((resolve, reject) => {
-    MongoClient.connect(url, option, function (err, db) {
+    MongoClient.connect(process.env.DATABASE, option, function (err, db) {
         if (err) {
-            MongoClient.close();
+
             reject(err);
             return;
         }

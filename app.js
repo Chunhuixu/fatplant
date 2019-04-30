@@ -8,7 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
-
+var serveIndex = require('serve-index');
 var db = require('./db/db.js');
 var app = express();
 
@@ -24,7 +24,16 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
+const serveOpt = {
+    icons: true,
+    view: 'details'
+};
+
+
 app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/ftp', express.static('upload/'), serveIndex('upload/', serveOpt))
+
+// app.use("/",express.static(__dirname + "/public"));
 
 
 //parsers

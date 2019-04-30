@@ -3,7 +3,6 @@ var router = express.Router();
 var fs = require('fs');
 
 
-
 const csvFilePath='./fileCyt/example.csv';
 const csv=require('csvtojson');
 
@@ -30,77 +29,9 @@ router.get('/', function(req, res, next) {
 
 router.get('/data',  function (req, res, next) {
 
-    console.log("21312");
+    //---csv data template start--
 
-    csv().fromFile(csvFilePath)
-        .then((jsonObj)=>{
-            var datas=[];
-            for (var i=0;i<20;i++){
-
-
-
-            var data1 = {};
-            var nodeModel1= {};
-            data1["id"] = jsonObj[i].Gene_A;
-            nodeModel1["data"] =data1;
-            datas.push(nodeModel1);
-
-
-
-            var data2 = {};
-            var nodeModel2= {};
-            data2["id"] = jsonObj[i].Gene_B;
-            nodeModel2["data"] =data2;
-            datas.push(nodeModel2);
-
-
-            var data3 ={};
-            var nodeModel3= {};
-            data3["id"] = "e"+i;
-            data3["source"] = jsonObj[i].Gene_A;
-            data3["label"] = jsonObj[i].SCORE;
-            data3["target"] = jsonObj[i].Gene_B;
-            nodeModel3["data"] =data3;
-            datas.push(nodeModel3);
-
-            }
-            console.log(datas);
-
-
-
-
-
-
-            jsonString = JSON.stringify(datas);  //[{"id":1,"name":"test1","age":2}]
-
-            var elementsdata = [ // list of graph elements to start with
-
-
-                { // node a
-                    "data": { "id": 'GO:0009292' }, "position": { x: 0, y: 0},
-
-                },
-
-                { // node b
-                    "data": {  id: 'GO:0044728' },  position: { x: 0, y: 300 },
-                },
-                { // edge ab
-                    data: { id: '01', source: 'GO:0009292',label: 'top left' , target: 'GO:0044728' }
-                }
-            ];
-           // console.log(elementsdata);
-
-
-
-            res.send(datas);
-
-
-
-
-        })
-
-
-// { SUID: '3978',
+    // { SUID: '3978',
 //     BEND_MAP_ID: '1129198',
 //     Gene_A: 'GO:0051276',
 //     Gene_B: 'GO:0071103',
@@ -117,6 +48,65 @@ router.get('/data',  function (req, res, next) {
 //     target: '107',
 //     target_original: '',
 //     TYPE: 'Direct' },
+    // -- csv data end---
+
+    csv().fromFile(csvFilePath)
+        .then((jsonObj)=>{
+            var datas=[];
+            //number of object
+            for (var i=0;i<5;i++){
+            //node a
+            var data1 = {};
+            var nodeModel1= {};
+            data1["id"] = jsonObj[i].Gene_A;
+            nodeModel1["data"] =data1;
+            datas.push(nodeModel1);
+
+            //node b
+            var data2 = {};
+            var nodeModel2= {};
+            data2["id"] = jsonObj[i].Gene_B;
+            nodeModel2["data"] =data2;
+            datas.push(nodeModel2);
+
+            //edge
+            var data3 ={};
+            var nodeModel3= {};
+            data3["id"] = "e"+i;
+            data3["source"] = jsonObj[i].Gene_A;
+            data3["label"] = jsonObj[i].SCORE;
+            data3["target"] = jsonObj[i].Gene_B;
+            nodeModel3["data"] =data3;
+            datas.push(nodeModel3);
+
+            }
+
+            // -- elements template start--
+
+            // var elementsdata = [ // list of graph elements to start with
+            //
+            //
+            //     { // node a
+            //         "data": { "id": 'GO:0009292' }, "position": { x: 0, y: 0},
+            //
+            //     },
+            //
+            //     { // node b
+            //         "data": {  id: 'GO:0044728' },  position: { x: 0, y: 300 },
+            //     },
+            //     { // edge ab
+            //         data: { id: '01', source: 'GO:0009292',label: 'top left' , target: 'GO:0044728' }
+            //     }
+            // ];
+           // console.log(elementsdata);
+            // --elemenrs template end ----
+
+            res.send(datas);
+
+        })
+
+
+
 
 
 });

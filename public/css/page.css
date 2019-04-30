@@ -21,12 +21,12 @@
 }
 
 .table-expand-row.is-active .expand-icon::after {
-    content: 'sequence-';
+    content: 'sequence -';
     color: black;
 }
 
 .table-expand-row .expand-icon::after {
-    content: 'sequence+';
+    content: 'sequence +';
     color:#488b8f ;
 
 }
@@ -68,7 +68,9 @@
         opacity: 1;
     }
 }
-
+a.current.search:hover {
+    background: #74b49b;
+}
 
 /*td {*/
 /*text-overflow:ellipsis;*/
