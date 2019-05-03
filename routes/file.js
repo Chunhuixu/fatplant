@@ -27,17 +27,17 @@ var storage = multer.diskStorage({
 
         //
         // for no extention
-        //
-        // cb(null, file.fieldname + '-' + Date.now());
+        console.log(path.basename);
+        cb(null, file.fieldname + '-' + Date.now());
 
         // for hex
-        crypto.pseudoRandomBytes(16, function (err, raw) {
-            if (err) return cb(err)
-            cb(null, raw.toString('hex') + path.extname(file.originalname))
-        })
+        // crypto.pseudoRandomBytes(16, function (err, raw) {
+        //     if (err) return cb(err)
+        //     cb(null, raw.toString('hex') + path.extname(file.originalname))
+        // })
 
-        // for normal use
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+        // for page  use
+       // cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
 
     },
 
@@ -47,40 +47,41 @@ var upload = multer({storage: storage}).single('file')
 
 
 router.post('/upload',function (req, res, next) {
-    var file = req.file;
 
-    if  (typeof (file) == "undefined") {
-        res.render('dataPages/fileupload', {
-            title: 'File Upload',
-            judge: 'failed'
-        });
-    }
-    else {
-
+    // if  (typeof (file) == "undefined") {
+    //     res.render('dataPages/fileupload', {
+    //         title: 'File Upload',
+    //         judge: 'failed (no file upload)'
+    //     });
+    // }
+    // else {
         upload(req, res, function (err) {
+            var file = req.file;
+
+
+            //
             if (err instanceof multer.MulterError) {
                 res.render('dataPages/fileupload', {
                     title: 'File Upload',
-                    judge: 'failed'
+                    judge: 'failed (multer error)'
 
                 });
             } else if (err) {
                 res.render('dataPages/fileupload', {
                     title: 'File Upload',
-                    judge: 'failed'
+                    judge: 'failed (err)'
 
                 });
             }
 
             //success
 
-            res.render('dataPages/fileupload', {
+            res.send({
                 title: 'File Upload',
                 judge: 'success'
 
             });
         })
-    }
 
 });
 

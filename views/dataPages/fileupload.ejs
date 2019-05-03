@@ -30,40 +30,43 @@
         <p> Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam
             eu diam mattis viverra. Nulla fringilla, orci ac euismod semper, magna.</p>
         </p>
-        <% if (typeof (judge) != "undefined") { %>
-        <div class="columns small-6 small-centered textrow">
-            <div class="callout  small">
-                <h5>Upload file <%=judge%></h5>
-            </div>
-        </div>
 
-        <% } %>
+
+
         <div class="columns small-12 small-centered ">
 
-        <div class="responsive-embed widescreen">
-            <iframe width="100%" height="315" src="/ftp" frameborder="0" allowfullscreen></iframe>
-        </div>
+            <div class="responsive-embed widescreen">
+                <iframe id="iframe" width="100%" height="315" src="/ftp" frameborder="0" allowfullscreen></iframe>
+            </div>
         </div>
 
         <div class="row column">
+
+            <div class="columns small-6 small-centered textrow">
+                <div id="alert" class="callout small">
+                    <h5 >Upload file</h5>
+                </div>
+            </div>
             <div class="columns small-12 small-centered textrow">
-                <form action="/file/upload" method="post" enctype="multipart/form-data">
+                <form>
                     <fieldset class="fieldset">
                         <legend>Upload File</legend>
 
-                         <input type="file" name="file" >
+                        <input type="file" name="file" id="file" multiple>
 
-                        <input type="submit" class="button" value="Submit">
+                        <input id="filebutton" type="button" class="button" value="Submit">
                     </fieldset>
 
                 </form>
+
+
             </div>
+
         </div>
 
 
     </div>
 </div>
-
 
 
 <!-- Start Fooder Bar -->
@@ -80,10 +83,46 @@
 
 <script>
     $(document).foundation();
-    $(document).ready(function () {
+    $(function () {
+        $("#alert").click(function(){
+            $(this).hide();
+            console.log();
+
+        })
+        $('#filebutton').click(function () {
+            var myForm = new FormData();
+            //NOTICE: jquery object != Dom object.
+            let filedata = document.getElementById("file").files;
+            if(curFiles.length === 0) {
+                $("#alert").text("")
+
+            }
+            myForm.append("file", filedata[0]);
+            console.log("te")
+            console.log(filedata)
 
 
+            // multiple file upload, might use in future.(the backend multer also need to change for multiple)
+            // let files = document.querySelector('[type=file]').files;
+            // for(var i = 0; i < files.length; i++){
+            //     myForm.append("file", files[i]);
+            // }
+            $.ajax({
+                url: 'file/upload',
+                type: 'post',
+                data: myForm,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+
+                    $('#iframe').attr('src', $('#iframe').attr('src'));
+
+                    console.log(res)
+                }
+            })
+        })
     })
 </script>
+
 </body>
 </html>

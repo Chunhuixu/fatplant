@@ -1,4 +1,7 @@
+
 //mongoose library test
+
+// I didnt choose to use mongoose cuz we only use Find(Search) in this project.
 
 var mongoose = require('mongoose');
 var url = 'mongodb://localhost:27017/data';
