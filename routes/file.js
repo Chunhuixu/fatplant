@@ -27,8 +27,9 @@ var storage = multer.diskStorage({
 
         //
         // for no extention
-        console.log(path.basename);
-        cb(null, file.fieldname + '-' + Date.now());
+
+
+        cb(null, path.parse(file.originalname).name+ '-' + Date.now());
 
         // for hex
         // crypto.pseudoRandomBytes(16, function (err, raw) {
@@ -48,28 +49,20 @@ var upload = multer({storage: storage}).single('file')
 
 router.post('/upload',function (req, res, next) {
 
-    // if  (typeof (file) == "undefined") {
-    //     res.render('dataPages/fileupload', {
-    //         title: 'File Upload',
-    //         judge: 'failed (no file upload)'
-    //     });
-    // }
-    // else {
         upload(req, res, function (err) {
-            var file = req.file;
 
 
             //
             if (err instanceof multer.MulterError) {
                 res.render('dataPages/fileupload', {
-                    title: 'File Upload',
-                    judge: 'failed (multer error)'
+
+                    judgecode: 0
 
                 });
             } else if (err) {
                 res.render('dataPages/fileupload', {
-                    title: 'File Upload',
-                    judge: 'failed (err)'
+
+                    judgecode: 0
 
                 });
             }
@@ -77,9 +70,7 @@ router.post('/upload',function (req, res, next) {
             //success
 
             res.send({
-                title: 'File Upload',
-                judge: 'success'
-
+                judgecode: 1
             });
         })
 
