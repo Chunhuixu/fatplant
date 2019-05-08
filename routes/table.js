@@ -1,6 +1,11 @@
 var express = require('express');
 var db = require('../db/db.js');
 var router = express.Router();
+var bodyParser = require('body-parser');
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: false}));
+
+
 var dbdata = "";
 
 var totalnumber = 0;
@@ -12,6 +17,8 @@ var number=0;
 
 var _id;
 var _num;
+
+
 
 
 router.get('/', function (req, res, next) {
@@ -120,12 +127,38 @@ router.get('/show', function (req, res, next) {
 
 router.get('/search', function (req, res, next) {
 
-        res.render('dataPages/tablesearch', {
-            title: 'Search',
+    res.render('dataPages/tablesearch', {
+        title: 'Search',
+
+    });
+
+});
+
+router.post('/search/genename', function (req, res) {
+
+
+    var searchname = req.body.name;
+
+    var reg = new RegExp(searchname, 'i');
+
+    var dbo = db.getconnect();
+    dbo.collection('LMPD').find({"gene_name": {$regex : reg}}).limit(20).toArray(function (err, result) {
+        if (err) throw err;
+        dbdata = result;
+        //console.log(dbdata)
+
+        res.render('dataPages/renderTable', {
+            data: dbdata,
 
         });
 
+
+    });
+
+
+
 });
+
 // router.get('/:num', function (req, res, next) {
 // });
 

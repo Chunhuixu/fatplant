@@ -11,6 +11,7 @@
 
 
     <link rel='stylesheet' href='/static/css/foundation.css'/>
+    <link rel='stylesheet' href='/static/css/page.css'/>
     <link rel='stylesheet' href='/static/css/custom.css'/>
 
 
@@ -27,26 +28,37 @@
 <div class="row column">
     <div class="columns small-10 small-centered textrow">
 
-        <p> search......  not finish yet  </p>
+        <p> Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam
+            eu diam mattis viverra. Nulla fringilla, orci ac euismod semper, magna.</p>
+        </p>
+
         <a class ="button" href="/table">back </a>
-
-
-
 
         <div class="row column">
             <div class="columns small-12 small-centered textrow">
-                <form action="#" method="post" enctype="multipart/form-data">
+
                     <fieldset class="fieldset">
-                        <legend>search</legend>
+                        <legend>Search Example</legend>
+
+                        <label>gene_name
+                            <input id="genename" name="genename"  type="text" >
+                        </label>
+                        <p class="help-text">below shows the related data based on the gene_name</p>
+                        <p class="help-text">Example name for test: lipid phosphate / DELLA protein RGA</p>
 
 
-                        <input type="submit" class="button" value="Submit">
+                        <input id="formbutton" type="button" class="button" value="Submit">
                     </fieldset>
-                </form>
+
             </div>
         </div>
 
 
+
+    </div>
+    <!-- start table Bar -->
+    <div id="tableContent" style="border:1px">
+        <!-- start table Bar -->
     </div>
 </div>
 
@@ -67,6 +79,38 @@
 <script>
     $(document).foundation();
     $(document).ready(function () {
+        $('#formbutton').click(function () {
+
+
+            //NOTICE: jquery object != Dom object.
+            let data = $("#genename").val().replace(/(^\s*)|(\s*$)/g, ''); console.log(data);
+
+            if (data.length === 0|| data ===''|| data ==null) {
+               console.log("waring");
+
+            } else {
+                $.ajax({
+                    url: '/table/search/genename',
+                    type: 'post',
+                    data: {
+                        name: data
+                    },
+                    success: function(data){
+                        $("#tableContent").html(data);
+                        $('[data-open-details]').click(function (e) {
+                            e.preventDefault();
+                            $(this).next().toggleClass('is-active');
+                            $(this).toggleClass('is-active');
+                        });
+
+                    },
+
+
+                    error:function (res) {
+                    },
+                })
+            }
+        })
 
 
     })
