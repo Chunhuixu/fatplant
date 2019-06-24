@@ -1,23 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
+var db = require('../db/db.js');
+var bodyParser = require('body-parser');
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: false}));
 
 
-const csvFilePath='./fileCyt/example.csv';
+const csvFilePath='./fileCyt/network.csv';
+const csvEntityTableFilePath = './fileCyt/GO_AllLists.csv'
 const csv=require('csvtojson');
-
-
-var jsonString;
-
-var edgeModel=[ { data: { id: 'GO:0009292' }, position: { x: 0, y: 0 } },
-    { data: { id: 'GO:0044728' }, position: { x: 0, y: 300 } },
-    { data:
-            { id: '01',
-                source: 'GO:0009292',
-                label: 'top left',
-                target: 'GO:0044728' } }
-]
-
 
 router.get('/', function(req, res, next) {
     res.render('dataPages/cytView', {
@@ -26,6 +18,125 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.get('/entity-table', function(req,res,next){
+
+    csv().fromFile(csvEntityTableFilePath)
+        .then((jsonObj)=>{
+            searchVariable = req.query.testVar;
+            var entitiesToInclude = [];
+
+            for (var i=0;i<jsonObj.length;i++){
+                for (var key in jsonObj[i]) {
+                    if (jsonObj[i].hasOwnProperty(key)) {
+                        if(jsonObj[i][key] === ""){
+                            delete jsonObj[i][key]
+                        }
+                    }
+                }
+            }
+
+
+            //this could be change to id(primary) > number(current) for speed up the searching time...
+            //I will just use skip() function for now.
+            var dbo = db.getconnect();
+            //{"_id": _id}
+            tempResult = null;
+            dbo.collection('LMPD').find({"gene_symbol":searchVariable.toUpperCase()}).toArray(function (err, result) {
+                tempResult = result
+                if(result.length > 0){
+                    filterEntities()
+                }
+                else{
+                    checkRefSeqId();
+                }
+            });
+              
+            function checkRefSeqId(){
+                // find the real gene_symbol by checking if the search variable is a refseq_id
+                dbo.collection('LMPD').find({"refseq_id":searchVariable.toUpperCase()}).toArray(function (err, result) {
+
+                    tempResult = result
+                    if(result.length > 0){
+                        searchVariable = result[0]['gene_symbol']
+                        filterEntities()
+                    }
+                    else{
+                        checkMRnaId();
+                    }
+                });
+            }
+
+            function checkMRnaId(){
+                // find the real gene_symbol by checking if the search variable is a mrna_id
+                dbo.collection('LMPD').find({"mrna_id":searchVariable.toUpperCase()}).toArray(function (err, result) {
+
+                    tempResult = result
+                    if(result.length > 0){
+                        searchVariable = result[0]['gene_symbol']
+                        filterEntities()
+                    }
+                    else{
+                        checkUniProtId()
+                    }
+                });
+            }
+
+            function checkUniProtId(){
+                // find the real gene_symbol by checking if the search variable is a mrna_id
+                dbo.collection('LMPD').find({"uniprot_id":searchVariable.toUpperCase()}).toArray(function (err, result) {
+
+                    tempResult = result
+                    if(result.length > 0){
+                        searchVariable = result[0]['gene_symbol']
+                        filterEntities()
+                    }
+                    else{
+                        // TODO handle bad input param variable
+                    }
+                });
+            }
+
+
+            function filterEntities(){
+
+                searchVariable = searchVariable.toLowerCase();
+
+                for (var i=0;i<jsonObj.length;i++){
+                    for (var key in jsonObj[i]) {
+                        if(jsonObj[i][key].toLowerCase() === searchVariable){
+                            entitiesToInclude.push(jsonObj[i]['GO'])
+                            break;
+                        }
+                    }
+                }
+    
+                res.send(entitiesToInclude);
+
+            }
+            
+            /*
+            
+            { _id: 'pf_88',
+            lmp_id: 'LMP011386',
+            entrez_gene_id: 816538,
+            gene_name: 'transcription factor PIF1',
+            gene_symbol: 'PIL5',
+            refseq_id: 'NP_179608',
+            mrna_id: 'NM_127577',
+            protein_gi: 30680909,
+            sequence:
+            'MHHFVPDFDTDDDYVNNHNSSLNHLPRKSITTMGEDDDLMELLWQNGQVVVQNQRLHTKKPSSSPPKLLPSMDPQQQPSSDQNLFIQEDEMTSWLHYPLRDDDFCSDLLFSAAPTATATATVSQVTAARPPVSSTNESRPPVRNFMNFSRLRGDFNNGRGGESGPLLSKAVVRESTQVSPSATPSAAASESGLTRRTDGTDSSAVAGGGAYNRKGKAVAMTAPAIEITGTSSSVVSKSEIEPEKTNVDDRKRKEREATTTDETESRSEETKQARVSTTSTKRSRAAEVHNLSERKRRDRINERMKALQELIPRCNKSDKASMLDEAIEYMKSLQLQIQMMSMGCGMMPMMYPGMQQYMPHMAMGMGMNQPIPPPSFMPFPNMLAAQRPLPTQTHMAGSGPQYPVHASDPSRVFVPNQQYDPTSGQPQYPAGYTDPYQQFRGLHPTQPPQFQNQATSYPSSSRVSSSKESEDHGNHTTG',
+            seqlength: 478,
+            uniprot_id: 'Q8GZM7',
+            protein_entry: 'PIF1_ARATH',
+            protein_name: 'transcription factor PIF1',
+            taxid: 3702,
+            species: 'Arabidopsis',
+            species_long: 'Arabidopsis thaliana' }
+            
+            */
+        });
+});
 
 router.get('/data',  function (req, res, next) {
 
@@ -52,63 +163,110 @@ router.get('/data',  function (req, res, next) {
 
     csv().fromFile(csvFilePath)
         .then((jsonObj)=>{
-            var datas=[];
+            var elements=[];
+            var genes=[];
+            var nodes=[];
+            var groupNum = 1;
             //number of object
-            for (var i=0;i<5;i++){
-            //node a
-            var data1 = {};
-            var nodeModel1= {};
-            data1["id"] = jsonObj[i].Gene_A;
-            nodeModel1["data"] =data1;
-            datas.push(nodeModel1);
+            console.log()
+            for (var i=0;i<jsonObj.length;i++){
 
-            //node b
-            var data2 = {};
-            var nodeModel2= {};
-            data2["id"] = jsonObj[i].Gene_B;
-            nodeModel2["data"] =data2;
-            datas.push(nodeModel2);
+                if(groupNum > 11){
+                    groupNum = 1;
+                }
 
-            //edge
-            var data3 ={};
-            var nodeModel3= {};
-            data3["id"] = "e"+i;
-            data3["source"] = jsonObj[i].Gene_A;
-            data3["label"] = jsonObj[i].SCORE;
-            data3["target"] = jsonObj[i].Gene_B;
-            nodeModel3["data"] =data3;
-            datas.push(nodeModel3);
+                // if node not already mapped
+                if(!genes.includes(jsonObj[i].Gene_A)){
+                    genes.push(jsonObj[i].Gene_A)
 
+                    // node a
+                    var data = {};
+                    var nodeModel= {};
+                    data["id"] = jsonObj[i].Gene_A;
+                    data["name"] = jsonObj[i].Gene_A;
+                    data["score"] = 0;
+                    data["gene"] = true;
+                    nodeModel["data"] =data;
+                    nodeModel["group"] = "nodes"
+                    elements.push(nodeModel);
+
+                }
+
+                // if node not already mapped
+                if(!genes.includes(jsonObj[i].Gene_B)){
+                    genes.push(jsonObj[i].Gene_B)
+
+                    //node b
+                    var data = {};
+                    var nodeModel= {};
+                    data["id"] = jsonObj[i].Gene_B;
+                    data["name"] = jsonObj[i].Gene_B;
+                    data["score"] = 0;
+                    data["gene"] = true;
+                    nodeModel["data"] =data;
+                    nodeModel["group"] = "nodes"
+                    elements.push(nodeModel);
+                }
+
+                for(var j=0; j<elements.length;j++){
+                    var tempModel = elements[j]
+                    if(tempModel["data"]["name"] == jsonObj[i].Gene_B){
+                        tempModel["data"]["score"] += .0004;
+                    }
+                    else if(tempModel["data"]["name"] == jsonObj[i].Gene_A){
+                        tempModel["data"]["score"] += .0004;
+                    }
+                }
+
+                // edge
+                var data ={};
+                var nodeModel= {};
+                data["source"]=jsonObj[i].Gene_A;
+                data["target"]=jsonObj[i].Gene_B;
+                data["weight"]=jsonObj[i].SCORE / 1.2;
+                data["group"]= groupNum.toString();
+                nodeModel["data"] =data;
+                nodeModel["group"] = "edges"
+                elements.push(nodeModel);
+
+                groupNum++;
             }
+
+
+
+            // console.log(elements)
 
             // -- elements template start--
 
-            // var elementsdata = [ // list of graph elements to start with
-            //
-            //
-            //     { // node a
-            //         "data": { "id": 'GO:0009292' }, "position": { x: 0, y: 0},
-            //
+            // elements: [{
+            //     "data": {
+            //       "id": "605755",
+            //       "name": "PCNA",
+            //       "score": 1,
+            //       "gene": true
             //     },
-            //
-            //     { // node b
-            //         "data": {  id: 'GO:0044728' },  position: { x: 0, y: 300 },
+            //     "group": "nodes",
+            //   }, {
+            //     "data": {
+            //       "id": "611408",
+            //       "name": "FEN1",
+            //       "score": 1,
+            //       "gene": true
             //     },
-            //     { // edge ab
-            //         data: { id: '01', source: 'GO:0009292',label: 'top left' , target: 'GO:0044728' }
-            //     }
-            // ];
-           // console.log(elementsdata);
-            // --elemenrs template end ----
+            //     "group": "nodes"
+            //   }, {
+            //     "data": {
+            //       "source": "605755",
+            //       "target": "611408",
+            //       "weight": 1,
+            //       "group": "1",
+            //     },
+            //     "group": "edges",
+            //   }]
 
-            res.send(datas);
+            res.send(elements);
 
         })
-
-
-
-
-
 });
 
 

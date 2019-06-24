@@ -50,12 +50,24 @@ var pageRouter = require('./routes/page'); //page-about
 var fileRouter = require('./routes/file'); //file upload
 var cytRouter = require('./routes/cyView') // for Cytoscape
 
+var devIndexRouter = require('./routes/devIndex'); //home
+var devTableRouter = require('./routes/devTable'); //table
+var devPageRouter = require('./routes/devPage'); //page-about
+var devFileRouter = require('./routes/devFile'); //file upload
+var devCytRouter = require('./routes/devCyView') // for Cytoscape
+
 //rountering ===>
 app.use('/', indexRouter);
 app.use('/table', tableRouter);
 app.use('/page', pageRouter);
 app.use('/file', fileRouter);
 app.use('/cy', cytRouter);
+
+app.use('/dev', devIndexRouter);
+app.use('/dev/table', devTableRouter);
+app.use('/dev/page', devPageRouter);
+app.use('/dev/gile', devFileRouter);
+app.use('/dev/cy', devCytRouter);
 
 
 // //API- ignore and delete below if we dont have api route
