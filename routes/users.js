@@ -12,7 +12,7 @@ router.get('/login',function(req,res){
 router.post('/login',function(req,res,next){
     let query={username:req.body.username}
     var dbo=require('../db/db').getconnect();
-    var collection=dbo.collection("Users");
+    var collection=dbo.collection(process.env.USERS_COLLECTION);
     collection.findOne(query,function(err,result){
         if(err) throw err;
         if(!result){
@@ -49,7 +49,7 @@ router.post('/register',function(req,res){
                 if(err) throw err;
                 newUser.password=hash;
                 var db=require('../db/db').getconnect();
-                var collection=db.collection("Users");
+                var collection=db.collection(process.env.USERS_COLLECTION);
                 collection.insertOne(newUser,function(err){
                     if(err) throw err;
                     res.redirect('/users/login')

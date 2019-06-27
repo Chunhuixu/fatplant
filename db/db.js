@@ -28,7 +28,7 @@ module.exports.connect = () => new Promise((resolve, reject) => {
         }
         resolve(db);
 
-        connection = db.db("data");
+        connection = db.db(process.env.DATABASE_NAME);
 
     });
 });
@@ -40,5 +40,3 @@ module.exports.getconnect = () => {
     }
     return connection;
 }
-
-
