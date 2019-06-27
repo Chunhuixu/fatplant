@@ -18,8 +18,14 @@
             </div>
             <div class="top-bar-right">
                 <ul class="menu">
-                    <li><a href="/users/login">Login</a></li>
-
+                    <li><a href="/users/login" id="loginhref">Login</a></li>
+                    <script type="text/javascript">
+                      if(document.cookie){
+                        var href=document.getElementById("loginhref");
+                        href.href="/users/logout";
+                        href.text="Logout";
+                      }
+                      </script>
                 </ul>
             </div>
         </div>

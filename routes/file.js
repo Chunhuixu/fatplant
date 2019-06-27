@@ -76,12 +76,21 @@ router.post('/upload',function (req, res, next) {
 
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', ensureAuthentication,function(req, res, next) {
      res.render('dataPages/fileupload', {
         title: 'File Upload',
 
     });
 });
+
+function ensureAuthentication(req,res,next){
+  if(req.cookies.LOGIN){
+    next();
+  }
+  else{
+    res.redirect('/users/login');
+  }
+}
 
 
 module.exports = router;

@@ -50,6 +50,8 @@ var pageRouter = require('./routes/page'); //page-about
 var fileRouter = require('./routes/file'); //file upload
 var cytRouter = require('./routes/cyView') // for Cytoscape
 
+var userRouter=require('./routes/users');
+
 var devIndexRouter = require('./routes/devIndex'); //home
 var devTableRouter = require('./routes/devTable'); //table
 var devPageRouter = require('./routes/devPage'); //page-about
@@ -62,6 +64,7 @@ app.use('/table', tableRouter);
 app.use('/page', pageRouter);
 app.use('/file', fileRouter);
 app.use('/cy', cytRouter);
+app.use('/users',userRouter);
 
 app.use('/dev', devIndexRouter);
 app.use('/dev/table', devTableRouter);
