@@ -147,6 +147,34 @@ tbody td {
     padding: .2rem .325rem .325rem;
 }
 
+input[type="text"], input[type="password"] {
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 10px 0px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(204, 204, 204);
+    border-image: initial;
+}
+
+input[type="submit"] {
+    background-color: rgb(21, 74, 219);
+    color: white;
+    height: 45px;
+    border-style: groove;
+    border-radius: 6px;
+}
+
+.login-background{
+    text-align: center;
+    width: 40%;
+    padding: 16px;
+    margin: auto;
+    border-style: groove;
+    border-width: 5px;
+}
+
 .hr-line {
     margin-left: auto;
     margin-right: auto;
@@ -174,6 +202,11 @@ tbody td {
     float: left;
 }
 
+.btn-group {
+    margin: auto;
+    width: max-content;
+}
+
 .button5 {
     border: 2px solid #488b8f;
     background-color: #488b8f;
@@ -181,7 +214,7 @@ tbody td {
 }
 
 .button5:hover {
-    background-color: #73afb3; 
+    background-color: #73afb3;
 }
 
 .button4 {
@@ -191,7 +224,7 @@ tbody td {
 }
 
 .button4:hover {
-    background-color: #73afb3; 
+    background-color: #73afb3;
 }
 
 .button3 {
@@ -201,7 +234,7 @@ tbody td {
 }
 
 .button3:hover {
-    background-color: #73afb3; 
+    background-color: #73afb3;
 }
 
 .button2 {
@@ -211,7 +244,7 @@ tbody td {
 }
 
 .button2:hover {
-    background-color: #73afb3; 
+    background-color: #73afb3;
 }
 
 .button1 {
@@ -221,7 +254,7 @@ tbody td {
 }
 
 .button1:hover {
-    background-color: #73afb3; 
+    background-color: #73afb3;
 }
 
 .btn-group .button:not(:last-child) {
@@ -236,6 +269,8 @@ tbody td {
 #filter-box {
     float: none;
     clear: both;
+    margin: auto;
+    width: max-content;
 }
 
 #entity-identifier-submit {
@@ -243,6 +278,6 @@ tbody td {
 }
 
 #entity-identifier-textbox {
-    width: 40%;
-    float:left;
+    width: 30vw;
+    float: left;
 }
