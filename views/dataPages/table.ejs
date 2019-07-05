@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title><%= title %></title>
 
+<!--THESE IMPORTS NEED TO WORK WITH THE DATATABLE... CHOP CHOP-->
+    <!-- DataTables CSS -->
+ <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+
+    <!-- DataTables CSS -->
+    <!-- <link rel="stylesheet" href="/static/css/jquery.dataTables.css"> -->
+
+    <!-- jQuery -->
+    <!-- <script type="text/javascript" charset="utf8" src="../media/js/jquery.js"></script> -->
+
+    <!-- DataTables -->
+    <!-- <script type="text/javascript" charset="utf8" src="../media/js/jquery.dataTables.js"></script> --> -->
+<!--NEED TO GET THE JQUERY DATATABLES AND THE JQUERY DATATABLE CSS IMPORTS-->
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
           integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
@@ -25,7 +45,6 @@
 <!-- Start Top Bar -->
 <%- include('../block/header') -%>
 <!-- End Top Bar -->
-
 <div class="row columns">
     <div class="columns small-10 small-centered textrow ">
 
@@ -35,77 +54,8 @@
 </div>
 <!--I know the code below is so ugly, I just use the simplest and the fast way to write this. might change in future -->
 <!--I would recommend using AJAX/XHR/ATOM, table update without refresh would be perfered -->
-<% if ((typeof (pnumber) != "undefined") && (typeof (currentPnum) != "undefined")){ %>
-    <% if ((pnumber >= 5) && (currentPnum >= 2) ){ %>
-        <div class="row columns ">
-            <div class="columns small-10 small-centered" style="margin-top: 15px ; margin-bottom: -15px">
-                <ul class="pagination text-center" role="navigation" aria-label="Pagination">
-                    <li><a href="/table">First</a></li>
-
-                    <li><a href="/table/data/?num=<%= currentPnum - 1 %>&pnumber=<%= pnumber %>"><i
-                                    class="fas fa-angle-double-left"></i></a></li>
-
-                    <li>
-                        <a href="/table/data/?num=<%= currentPnum - 2 %>&pnumber=<%= pnumber %>"><%= currentPnum - 1 %></a>
-                    </li>
-                    <li><a href="/table/data/?num=<%= currentPnum - 1 %>&pnumber=<%= pnumber %>"><%= currentPnum %></a>
-                    </li>
-                    <li class="current"><%= currentPnum + 1 %></li>
-                    <% if ( currentPnum + 1 <= pnumber ){ %>
-                        <li>
-                            <a href="/table/data/?num=<%= currentPnum + 1 %>&pnumber=<%= pnumber %>"><%= currentPnum + 2 %></a>
-                        </li>
-                    <% } %>
-                    <% if ( currentPnum + 2 <= pnumber ){ %>
-                        <li>
-                            <a href="/table/data/?num=<%= currentPnum + 2 %>&pnumber=<%= pnumber %>"><%= currentPnum + 3 %></a>
-                        </li>
-                    <% } %>
-                    <% if ( currentPnum + 1 <= pnumber ){ %>
-                        <li><a href="/table/data/?num=<%= currentPnum + 1 %>&pnumber=<%= pnumber %>"><i
-                                        class="fas fa-angle-double-right"></i></a></li>
-                    <% } else { %>
-                        <li class="disabled"><i class="fas fa-angle-double-right"></i></li>
-
-                    <% } %>
-
-                    <li><a href="/table/data/?num=<%= pnumber %>&pnumber=<%= pnumber %>">Last</a></li>
-                    <li><a class="current search" href="/table/search">Search &nbsp;<i class="fas fa-search"></i></a>
-                    </li>
-                </ul>
-
-            </div>
-        </div>
-    <% } else { %>
-        <div class="row columns ">
-            <div class="columns small-10 small-centered" style="margin-top: 15px ; margin-bottom: -15px">
-                <ul class="pagination text-center" role="navigation" aria-label="Pagination">
-                    <li class="page"><a href="/table">First</a></li>
-
-                    <li class="page disabled"><i class="fas fa-angle-double-left"></i></li>
-
-                    <li class="page current">1</li>
-                    <li class="page"><a href="/table/data/?num=1&pnumber=<%= pnumber %>">2</a></li>
-                    <li class="page"><a href="/table/data/?num=2&pnumber=<%= pnumber %>">3</a></li>
-                    <li class="page"><a href="/table/data/?num=3&pnumber=<%= pnumber %>">4</a></li>
-                    <li class="page"><a href="/table/data/?num=4&pnumber=<%= pnumber %>">5</a></li>
-                    <li class="page"><a href="/table/data/?num=1&pnumber=<%= pnumber %>"><i
-                                    class="fas fa-angle-double-right"></i></a></li>
-
-
-                    <li class="page"><a href="/table/data/?num=<%= pnumber %>&pnumber=<%= pnumber %>">Last</a></li>
-                    <li class="page"><a class="current search" href="/table/search">Search &nbsp;<i
-                                    class="fas fa-search"></i></a></li>
-                </ul>
-
-            </div>
-        </div>
-
-
-
-    <% } %>
-<% } %>
 <!--  above is the button for page-->
+
 <div class="row columns">
     <div class="columns small-10 small-centered">
         <div class=" text-center" id="loading" style="margin-top: 35px">
@@ -128,8 +78,8 @@
 
             <div class="columns small-10 small-centered table-scroll ">
 
-
-                <table class="hover table-expand">
+<div class"container">
+                <table id="tablehtml" class="hover table-expand display">
                     <thead>
                     <tr class="table-expand-row">
                         <% th = Object.keys(tabledata[0]) %>
@@ -153,21 +103,11 @@
                                 <% } %>
                             <% } %>
                         </tr>
-                        <tr class="table-expand-row-content">
-                            <td colspan="15" class="table-expand-row-nested">
-
-                                <p>
-                                    <a href="/table/show/?id=<%= tabledata[i]["_id"] %>"><%= tabledata[i]["sequence"] %></a>
-                                </p>
-                            </td>
-
-                        </tr>
-
                     <% } %>
 
                     </tbody>
                 </table>
-
+</div>
             </div>
         </div>
         <!-- End table Bar -->
@@ -175,15 +115,14 @@
 </div>
 <!-- End table Bar -->
 
-
 <!-- Start Fooder Bar -->
 <%- include('../block/footer') -%>
 <!-- End Fooder Bar -->
 
-
 <script src="/static/js/vendor/jquery.js"></script>
 <script src="/static/js/vendor/what-input.js"></script>
 <script src="/static/js/vendor/foundation.min.js"></script>
+<script src="/static/js/vendor/jquery.dataTables.js"></script>
 <script src="/static/js/custom.js"></script>
 
 
@@ -193,6 +132,8 @@
         // build pagination
         $("#loading").hide();
         $("#tableContent").show();
+        //This adds the search functionality
+        $("#tablehtml").DataTable();
 
         //ajax aborted
         // $.get({

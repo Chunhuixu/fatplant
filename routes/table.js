@@ -24,12 +24,11 @@ var _num;
 router.get('/', function (req, res, next) {
     var dbo = db.getconnect();
 
-    dbo.collection('LMPD').countDocuments({}, function(err, numOfDocs){
+    dbo.collection(process.env.TABLE_COLLECTION).countDocuments({}, function(err, numOfDocs){
         if (err) throw err;
         totalnumber = parseInt(numOfDocs);
-
         pagenumber = Math.floor(totalnumber/pagesize);
-        dbo.collection('LMPD').find({}).limit(20).toArray(function (err, result) {
+        dbo.collection(process.env.TABLE_COLLECTION).find({}).toArray(function (err, result) {
             if (err) throw err;
             res.render('dataPages/table', {
                 title: 'Table',
@@ -164,5 +163,3 @@ router.post('/search/genename', function (req, res) {
 
 
 module.exports = router;
-
-
