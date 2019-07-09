@@ -1,107 +1,5 @@
-<!DOCTYPE html>
-<html class="no-js" lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title><%= title %></title>
-
-
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-
-
-    <link rel='stylesheet' href='/static/css/foundation.css'/>
-    <link rel='stylesheet' href='/static/css/custom.css'/>
-
-    <!-- For loading external data files -->
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,fetch"></script>
-
-    <script src="/static/js/cytoscape.min.js"></script>
-
-
-</head>
-<body>
-
-<!-- Start Top Bar -->
-<%- include('../block/navbar') -%>
-<!-- End Top Bar -->
-
-<!-- Start Top Bar -->
-<%- include('../block/header') -%>
-<!-- End Top Bar -->
-<div class="row columns">
-    <div class="columns small-10 small-centered textrow ">
-
-        <p>Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam
-            eu diam mattis viverra. Nulla fringilla, orci ac euismod semper, magna.
-        </p>
-
-    </div>
-</div>
-<div class="row columns">
-
-    <div class=" text-center" id="loading" style="margin-top: 35px">
-        <h5><i class="fas fa-spinner fa-spin fa-1.5x"></i>&nbsp;Loading to the page .... </h5>
-    </div>
-
-</div>
-
-
-<div class="row column">
-
-    <div class="btn-group">
-        <button id="layout1" class="button button1">CoSE</button>
-        <button id="layout2" class="button button2">Cola</button>
-        <button id="layout3" class="button button3">Circle</button>
-        <button id="layout4" class="button button4">Concentric</button>
-        <button id="layout5" class="button button5">Avsdf</button>
-    </div>
-    <br>
-    <div id="filter-box">
-        Entity Identifier:<br>
-        <input id="entity-identifier-textbox" type="text" name="entity-name" placeholder="Gene/RefSeq_id/mRna_id">
-        <button id="entity-identifier-submit" class="button">Filter</button>
-    </div>
-    
-    <div class=" columns small-10 small-centered" id="cy">
-
-
-    </div>
-
-</div>
-
-
-<!-- Start Fooder Bar -->
-<%- include('../block/footer') -%>
-<!-- End Fooder Bar -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.5.3/cytoscape.umd.js" type="text/javascript"></script>
-<script src="http://marvl.infotech.monash.edu/webcola/cola.v3.min.js"></script>
-<script src="/static/js/vendor/jquery.js"></script>
-<script src="/static/js/vendor/what-input.js"></script>
-<script src="/static/js/vendor/foundation.min.js"></script>
-
-<!--test. you could change this latter-->
-<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-<script src="https://unpkg.com/numeric/numeric-1.2.6.js"></script>
-<script src="https://unpkg.com/layout-base/layout-base.js"></script>
-<script src="https://unpkg.com/cose-base/cose-base.js"></script>
-
-<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
-<script src="cytoscape-cola.js"></script>
-<!--change-->
-<script src="/static/js/cytoscape-cola.js"></script>
-<script src="/static/js/fcose.js"></script>
-<script src="/static/js/custom.js"></script>
-<script src="https://unpkg.com/layout-base/layout-base.js"></script>
-<script src="https://unpkg.com/avsdf-base/avsdf-base.js"></script>
-<script src="/static/js/cytoscape-avsdf.js"></script>
-<!-- <script src="/static/js/code.js"></script> -->
-
-<script>
-    $(document).foundation();
+$(document).foundation();
     $(document).ready(function () {
-        // build pagination
 
         $("#cy").hide();
 
@@ -112,24 +10,52 @@
                 $("#loading").hide();
                 $("#cy").show();
 
-
                 var elementsdata = data;
-                console.log(JSON.stringify(elementsdata))
+                var cy = window.cy = cytoscape({
 
-                // console.log(elementsdata)
-
-                var cy = cytoscape({
-
-                    container: document.getElementById('cy'), // container to render in
-
+                    container: document.getElementById('cy'),
                     elements: elementsdata,
-
                     autounselectify: true,
-            
                     boxSelectionEnabled: false,
 
                 });
 
+                var nodeDescriptionData = null;
+                // get node description info
+                $.get({
+                    url: '/cy/node-description',
+                    success: function (data) {
+
+                        nodeDescriptionData = data;
+
+                    }
+                });
+
+                cy.on('mouseover', 'node', function(event){
+
+                    var node = event.target;
+                    nodeData = node.data();
+
+                    for( var j=0;j<nodeDescriptionData.length;j++){
+                        if(nodeData['id'] == nodeDescriptionData[j]['GO']){
+                            var tippyA = tippy(node.popperRef(), {
+                                content: nodeDescriptionData[j]['Description'].split(' ').map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' '),
+                                interactive: true,
+                                animation: 'perspective',
+                                trigger: 'manual'
+                            });
+                            
+                            tippyA.show();
+                            break;
+                        }
+                    }
+                });
+
+                cy.on('mouseout', 'node', function(event){
+
+                    $('.tippy-popper').remove();
+
+                });
 
                 $("#layout1").click(function(){
                     var layout = cy.layout({
@@ -312,17 +238,36 @@
 
                 $("#layout2").click(function(){
                     var layout = cy.layout({
-                        name: 'cola'
+                        name: 'cola',
+                        maxSimulationTime: 3000,
                     });
                     layout.run();
 
                     cy.style()
                         .resetToDefault() // start a fresh default stylesheet
-
-                        // and then define new styles
-                        .selector('node')
-                            .style('background-color', '#f92411')
-
+                        .fromJson([{
+                            "selector": "node",
+                            "style": {
+                            "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                            "height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                            "content": "data(name)",
+                            "font-size": "12px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "background-color": "red",
+                            "color": "black",
+                            "overlay-padding": "6px",
+                            "z-index": "10"
+                            }
+                        },
+                        ])
+                        // // and then define new styles
+                        // .selector('node')
+                        //     .style('background-color', '#f92411')
+                        // .selector('node')
+                        //     .style('label', 'data(id)')
+                        // .selector('node')
+                        //     .style('text-valign', 'center')
                         .selector('edge')
                             .style('line-color', '#f92411')
                             
@@ -348,7 +293,14 @@
                                 style: {
                                     'height': 20,
                                     'width': 20,
-                                    'background-color': '#e8e406'
+                                    'background-color': '#e8e406',
+                                    "content": "data(name)",
+                                    "font-size": "12px",
+                                    "text-valign": "center",
+                                    "text-halign": "center",
+                                    "color": "black",
+                                    "overlay-padding": "6px",
+                                    "z-index": "10"
                                 }
                                 },
 
@@ -390,9 +342,16 @@
                             {
                                 selector: 'node',
                                 style: {
-                                    'height': 20,
-                                    'width': 20,
-                                    'background-color': '#30c9bc'
+                                    'background-color': '#30c9bc',
+                                    'text-valign': 'center',
+                                    "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                                    "height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                                    "content": "data(name)",
+                                    "font-size": "12px",
+                                    "text-halign": "center",
+                                    "color": "black",
+                                    "overlay-padding": "6px",
+                                    "z-index": "10"
                                 }
                             },
 
@@ -414,6 +373,11 @@
                     $('.button').removeClass('disabled')
                     $(this).addClass('disabled')
 
+                    cy.viewport({
+                        zoom: 1,
+                        pan: { x: 100, y: 100 }
+                      });
+
                 });
 
                 $("#layout5").click(function(){
@@ -430,10 +394,17 @@
                             {
                                 selector: 'node',
                                 style: {
-                                    'label': 'data(id)',
+                                    'background-color': '#3a7ecf',
                                     'text-valign': 'center',
-                                    'color': '#000000',
-                                    'background-color': '#3a7ecf'
+                                    "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                                    "height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                                    "content": "data(name)",
+                                    "font-size": "12px",
+                                    "text-halign": "center",
+                                    "color": "black",
+                                    "overlay-padding": "6px",
+                                    "z-index": "10"
+                                    
                                 }
                             },
                             {
@@ -512,27 +483,9 @@
                                     $('#layout1').trigger('click');
                                 }
                             });
-
-                            
-                            // cy.json({ elements: newGraphElements });
-                            // clear current graph
-                            // populate with newGraphElements
-                            // use cyptoscape library methods
-
-
                         }
                     });
                 });
-
             }
         })
-        //console.log(mydata);
-
-
     });
-
-
-</script>
-
-</body>
-</html>

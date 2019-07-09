@@ -190,6 +190,11 @@ input[type="submit"] {
     margin:0px auto;
 
 }
+
+
+
+
+
 .btn-group .button {
     border: 1px solid black;
     color: white;
@@ -214,7 +219,7 @@ input[type="submit"] {
 }
 
 .button5:hover {
-    background-color: #73afb3;
+    background-color: #73afb3; 
 }
 
 .button4 {
@@ -224,7 +229,7 @@ input[type="submit"] {
 }
 
 .button4:hover {
-    background-color: #73afb3;
+    background-color: #73afb3; 
 }
 
 .button3 {
@@ -234,7 +239,7 @@ input[type="submit"] {
 }
 
 .button3:hover {
-    background-color: #73afb3;
+    background-color: #73afb3; 
 }
 
 .button2 {
@@ -244,7 +249,7 @@ input[type="submit"] {
 }
 
 .button2:hover {
-    background-color: #73afb3;
+    background-color: #73afb3; 
 }
 
 .button1 {
@@ -254,7 +259,7 @@ input[type="submit"] {
 }
 
 .button1:hover {
-    background-color: #73afb3;
+    background-color: #73afb3; 
 }
 
 .btn-group .button:not(:last-child) {
@@ -275,6 +280,7 @@ input[type="submit"] {
 
 #entity-identifier-submit {
     height: 2.4375rem;
+    margin: 10px 0px 10px 0px;
 }
 
 #entity-identifier-textbox {
