@@ -11,6 +11,7 @@ $(document).foundation();
                 $("#cy").show();
 
                 var elementsdata = data;
+                // console.log(elementsdata)
                 var cy = window.cy = cytoscape({
 
                     pixelRatio: 1,
@@ -20,6 +21,43 @@ $(document).foundation();
                     elements: elementsdata,
                     autounselectify: true,
                     boxSelectionEnabled: false,
+
+                });
+
+                var nodeDescriptionData = null;
+                // get node description info
+                $.get({
+                    url: '/protein-network/node-description',
+                    success: function (data) {
+
+                        nodeDescriptionData = data;
+
+                    }
+                });
+
+                cy.on('mouseover', 'node', function(event){
+
+                    var node = event.target;
+                    nodeData = node.data();
+
+                    for( var j=0;j<nodeDescriptionData.length;j++){
+                        if(nodeData['id'] == nodeDescriptionData[j]['node']){
+                            var tippyA = tippy(node.popperRef(), {
+                                content: nodeDescriptionData[j]['annotation'].split(' ').map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' '),
+                                interactive: true,
+                                animation: 'perspective',
+                                trigger: 'manual'
+                            });
+                            
+                            tippyA.show();
+                            break;
+                        }
+                    }
+                });
+
+                cy.on('mouseout', 'node', function(event){
+
+                    $('.tippy-popper').remove();
 
                 });
 
@@ -58,6 +96,12 @@ $(document).foundation();
                         cy.endBatch();
                         cy.stop()
                         cy.clearQueue()
+                        const ext = cy.extent()
+                        const nodesInView = cy.nodes().filter(n => {
+                            const bb = n.boundingBox()
+                            return bb.x1 > ext.x1 && bb.x2 < ext.x2 && bb.y1 > ext.y1 && bb.y2 < ext.y2
+                        })
+                        console.log(nodesInView.length)
                     });
 
                     $('.button').removeClass('disabled')
@@ -152,6 +196,12 @@ $(document).foundation();
                         cy.endBatch();
                         cy.stop()
                         cy.clearQueue()
+                        const ext = cy.extent()
+                        const nodesInView = cy.nodes().filter(n => {
+                            const bb = n.boundingBox()
+                            return bb.x1 > ext.x1 && bb.x2 < ext.x2 && bb.y1 > ext.y1 && bb.y2 < ext.y2
+                        })
+                        console.log(nodesInView.length)
                     });
 
                     $('.button').removeClass('disabled')
@@ -188,6 +238,12 @@ $(document).foundation();
                         cy.endBatch();
                         cy.stop()
                         cy.clearQueue()
+                        const ext = cy.extent()
+                        const nodesInView = cy.nodes().filter(n => {
+                            const bb = n.boundingBox()
+                            return bb.x1 > ext.x1 && bb.x2 < ext.x2 && bb.y1 > ext.y1 && bb.y2 < ext.y2
+                        })
+                        console.log(nodesInView.length)
                     });
 
                     $('.button').removeClass('disabled')
@@ -229,7 +285,7 @@ $(document).foundation();
 
                 // });
 
-                $('#layout1').trigger('click');
+                $('#layout3').trigger('click');
             }
         })
     });

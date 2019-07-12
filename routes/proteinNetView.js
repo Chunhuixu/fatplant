@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}));
 
-
+const csvNodeDescriptions = './fileCyt/string_protein_annotations.csv'
 
 const csvFilePath='./fileCyt/protein-interactions.csv';
 // const csvEntityTableFilePath = './fileCyt/GO_AllLists.csv'
@@ -19,6 +19,14 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.get('/node-description', function(req,res,next){
+
+    csv().fromFile(csvNodeDescriptions)
+        .then((jsonObj)=>{
+            res.send(jsonObj);
+        });
+});
+
 router.get('/data',  function (req, res, next) {
 
     console.log("hello");
@@ -28,8 +36,8 @@ router.get('/data',  function (req, res, next) {
             var elements=[];
             var genes=[];
             var groupNum = 1;
+            var nodeCount = 0
             //number of object
-            console.log()
             for (var i=0;i<jsonObj.length;i++){
 
                 if(groupNum > 11){
@@ -59,6 +67,7 @@ router.get('/data',  function (req, res, next) {
                     nodeModel["data"] =data;
                     nodeModel["group"] = "nodes"
                     elements.push(nodeModel);
+                    nodeCount++
 
                 }
 
@@ -76,6 +85,7 @@ router.get('/data',  function (req, res, next) {
                     nodeModel["data"] =data;
                     nodeModel["group"] = "nodes"
                     elements.push(nodeModel);
+                    nodeCount++
                 }
 
                 for(var j=0; j<elements.length;j++){
@@ -102,6 +112,10 @@ router.get('/data',  function (req, res, next) {
                 groupNum++;
             }
 
+            // console.log(genes.length)
+            // console.log(nodeCount)
+            // console.log(elements.length)
+            
             res.send(elements);
 
         })
