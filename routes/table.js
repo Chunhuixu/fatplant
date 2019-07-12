@@ -44,7 +44,23 @@ router.get('/', function (req, res, next) {
 
 });
 
+router.get('/species-filter',function(req,res,next){
+  res.render('dataPages/species-filter',{
+    title:'Species Filter'
+  });
+});
 
+router.post('/species-filter',function(req,res,next){
+  const species_query=req.body.search;
+  var dbo=db.getconnect();
+  dbo.collection(process.env.TABLE_COLLECTION).find({species:species_query}).toArray(function(err,result){
+    if(err) throw err;
+    res.render('dataPages/table',{
+      title:'Table',
+      tabledata:result
+    })
+  })
+})
 router.get('/data', function (req, res, next) {
 
     var dbo = db.getconnect();

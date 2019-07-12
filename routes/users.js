@@ -39,10 +39,12 @@ router.post('/register',function(req,res){
     const username=req.body.username;
     const password=req.body.password;
     const confirm=req.body.confirm;
+    const email=req.body.email;
     if(password===confirm){
         let newUser={
             username:username,
-            password:password
+            password:password,
+            email:email
         };
         bcrypt.genSalt(10,function(err,salt){
             bcrypt.hash(newUser.password,salt,function(err,hash){
