@@ -30,9 +30,20 @@ router.get('/', function (req, res, next) {
         pagenumber = Math.floor(totalnumber/pagesize);
         dbo.collection(process.env.TABLE_COLLECTION).find({}).toArray(function (err, result) {
             if (err) throw err;
+            tabledata=[];
+            result.forEach(function(entry){
+              var newobj={
+                _id:entry._id,
+                gene_name:entry.gene_name,
+                gene_symbol:entry.gene_symbol,
+                refseq_id:entry.refseq_id,
+                uniprot_id:entry.uniprot_id,
+                species:entry.species};
+                tabledata.push(newobj);
+              });
             res.render('dataPages/table', {
                 title: 'Table',
-                tabledata: result,
+                tabledata: tabledata,
                 pnumber:pagenumber,
                 currentPnum:0
             });
@@ -44,18 +55,86 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.get('/species-filter',function(req,res,next){
+router.get('/extended-table', function (req, res, next) {
+    var dbo = db.getconnect();
+
+    dbo.collection(process.env.TABLE_COLLECTION).countDocuments({}, function(err, numOfDocs){
+        if (err) throw err;
+        totalnumber = parseInt(numOfDocs);
+        pagenumber = Math.floor(totalnumber/pagesize);
+        dbo.collection(process.env.TABLE_COLLECTION).find({}).toArray(function (err, result) {
+            if (err) throw err;
+            res.render('dataPages/extendedtable', {
+                title: 'Table',
+                tabledata: result,
+                pnumber:pagenumber,
+                currentPnum:0
+            });
+
+        });
+
+    });
+});
+
+router.get('/extended-table/species-filter',function(req,res,next){
   res.render('dataPages/species-filter',{
     title:'Species Filter'
   });
 });
+
+router.get('/extended-table/table/species-filter',function(req,res,next){
+  res.redirect('/table/extended-table/species-filter');
+})
+
+router.get('/table/extended-table',function(req,res,next){
+  res.redirect('/table/extended-table')
+})
+
+router.get('/extended-table/table/extended-table',function(req,res,next){
+  res.redirect('/table')
+})
 
 router.post('/species-filter',function(req,res,next){
   const species_query=req.body.search;
   var dbo=db.getconnect();
   dbo.collection(process.env.TABLE_COLLECTION).find({species:species_query}).toArray(function(err,result){
     if(err) throw err;
-    res.render('dataPages/table',{
+    tabledata=[];
+    result.forEach(function(entry){
+      var newobj={
+        _id:entry._id,
+        gene_name:entry.gene_name,
+        gene_symbol:entry.gene_symbol,
+        refseq_id:entry.refseq_id,
+        uniprot_id:entry.uniprot_id,
+        species:entry.species};
+        tabledata.push(newobj);
+      });
+    res.render('dataPages/table', {
+        title: 'Table',
+        tabledata: tabledata,
+        pnumber:pagenumber,
+        currentPnum:0
+    });
+  })
+});
+
+router.get('/table/species-filter',function(req,res,next){
+  res.redirect('/table/species-filter');
+})
+
+router.get('/species-filter',function(req,res,next){
+  res.render('dataPages/species-filter',{
+    title:'Species Filter'
+  });
+});
+
+router.post('/extended-table/species-filter',function(req,res,next){
+  const species_query=req.body.search;
+  var dbo=db.getconnect();
+  dbo.collection(process.env.TABLE_COLLECTION).find({species:species_query}).toArray(function(err,result){
+    if(err) throw err;
+    res.render('dataPages/extendedtable',{
       title:'Table',
       tabledata:result
     })
