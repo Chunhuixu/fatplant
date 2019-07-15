@@ -287,3 +287,17 @@ input[type="submit"] {
     width: 30vw;
     float: left;
 }
+
+.btn-group ul.dropdown {
+    background-color: #488b8f;
+    border: 1px solid black;
+}
+
+.dropdown.menu > li.is-dropdown-submenu-parent > a.btn-group-dropdown{
+    color: white;
+    padding: 15px 25px;
+}
+
+.dropdown.menu > li.is-dropdown-submenu-parent > a.btn-group-dropdown::after{
+    border-color: white transparent transparent !important;
+}

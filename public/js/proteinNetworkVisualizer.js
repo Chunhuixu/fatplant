@@ -29,9 +29,7 @@ $(document).foundation();
                 $.get({
                     url: '/protein-network/node-description',
                     success: function (data) {
-
                         nodeDescriptionData = data;
-
                     }
                 });
 

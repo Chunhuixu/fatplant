@@ -15,7 +15,6 @@ const csv=require('csvtojson');
 router.get('/', function(req, res, next) {
     res.render('dataPages/proteinNetView', {
         title: 'Protein-Protein Network',
-
     });
 });
 
@@ -39,6 +38,10 @@ router.get('/data',  function (req, res, next) {
             var nodeCount = 0
             //number of object
             for (var i=0;i<jsonObj.length;i++){
+
+                if(jsonObj[i].combined_score < .952){
+                    continue;
+                }
 
                 if(groupNum > 11){
                     groupNum = 1;
