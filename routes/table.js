@@ -38,7 +38,8 @@ router.get('/', function (req, res, next) {
                 gene_symbol:entry.gene_symbol,
                 refseq_id:entry.refseq_id,
                 uniprot_id:entry.uniprot_id,
-                species:entry.species};
+                species:entry.species,
+                sequence:entry.sequence};
                 tabledata.push(newobj);
               });
             res.render('dataPages/table', {
@@ -107,7 +108,8 @@ router.post('/species-filter',function(req,res,next){
         gene_symbol:entry.gene_symbol,
         refseq_id:entry.refseq_id,
         uniprot_id:entry.uniprot_id,
-        species:entry.species};
+        species:entry.species,
+        sequence:entry.sequence};
         tabledata.push(newobj);
       });
     res.render('dataPages/table', {
