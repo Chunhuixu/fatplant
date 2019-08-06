@@ -148,31 +148,31 @@
         // })
 
 
-        $(".pagination li").click(function () {
+        //$(".pagination li").click(function () {
 
 
-            $("#loading").show();
-            $("#tableContent").hide();
+            //$("#loading").show();
+            //$("#tableContent").hide();
 
 
-        })
+        //})
 
-        $(".disabled").off("click");
-        $(".current").off("click");
+        //$(".disabled").off("click");
+        //$(".current").off("click");
 
-        $('[data-open-details]').click(function (e) {
-            e.preventDefault();
-            $(this).next().toggleClass('is-active');
-            $(this).toggleClass('is-active');
-        });
+        // $('[data-open-details]').click(function (e) {
+        //     e.preventDefault();
+        //     $(this).next().toggleClass('is-active');
+        //     $(this).toggleClass('is-active');
+        // });
 
     });
 
 
 </script>
 
-<% if ((typeof (pnumber) != "undefined") && (typeof (currentPnum) != "undefined")){ %>
-    <script>
+<!-- <% if ((typeof (pnumber) != "undefined") && (typeof (currentPnum) != "undefined")){ %> -->
+    <!-- <script>
         // deal with that pagenation button:
         var pnum = '<%= pnumber %>';
         var cnumber = '<%= currentPnum %>';
@@ -217,7 +217,7 @@
         }
 
 
-    </script>
-<% } %>
+    </script> -->
+<!-- <% } %> -->
 </body>
 </html>
