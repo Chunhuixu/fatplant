@@ -99,7 +99,8 @@
                                 <% if (attribute == "_id") {
                                     continue
                                 } else if (attribute == "sequence") { %>
-                                    <td><span class="expand-icon"></span></td>
+                                  <% var str="https://www.uniprot.org/uniprot/"+tabledata[i]["uniprot_id"]+".txt"%>
+                                      <td><a target="_blank" href=<%=str%>>sequence+</a></td>
                                 <% } else { %>
                                     <td><%= tabledata[i][attribute] %></td>
                                 <% } %>
